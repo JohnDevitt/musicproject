@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<!-- Generated with http://android-holo-colors.com -->
+<resources xmlns:android="http://schemas.android.com/apk/res/android">
+
+  <style name="SequencerGreen" parent="@style/_SequencerGreen"/>
+
+  <style name="_SequencerGreen" parent="android:Theme.Holo.Light">
+
+    <item name="android:listChoiceIndicatorMultiple">@drawable/sequencergreen_btn_check_holo_light</item>
+
+    <item name="android:listChoiceIndicatorSingle">@drawable/sequencergreen_btn_radio_holo_light</item>
+
+    <item name="android:buttonStyle">@style/ButtonSequencerGreen</item>
+
+    <item name="android:imageButtonStyle">@style/ImageButtonSequencerGreen</item>
+
+    <item name="android:dropDownSpinnerStyle">@style/SpinnerSequencerGreen</item>
+
+    <item name="android:progressBarStyleHorizontal">@style/ProgressBarSequencerGreen</item>
+
+    <item name="android:seekBarStyle">@style/SeekBarSequencerGreen</item>
+
+    <item name="android:buttonStyleToggle">@style/ToggleSequencerGreen</item>
+
+    <item name="android:listChoiceBackgroundIndicator">@drawable/sequencergreen_list_selector_holo_light</item>
+
+    <item name="android:activatedBackgroundIndicator">@drawable/sequencergreen_activated_background_holo_light</item>
+
+    <item name="android:fastScrollThumbDrawable">@drawable/sequencergreen_fastscroll_thumb_holo</item>
+
+  </style>
+
+</resources>

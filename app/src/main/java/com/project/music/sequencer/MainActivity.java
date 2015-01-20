@@ -23,7 +23,6 @@ public class MainActivity extends ActionBarActivity {
             for(int column = 0; column < layout.getColumnCount(); column++) {
                 View button = generateButton();
                 buttonMatrix[row][column] = button;
-                buttonMatrix[row][column].setBackgroundColor(0xFF00FF00);
                 layout.addView(button);
             }
         }
@@ -50,6 +49,8 @@ public class MainActivity extends ActionBarActivity {
                         }
                     }
                 });
+
+        button.setBackgroundResource(R.drawable.sequencer_theme_activated_background_holo_light);
 
         return button;
     }

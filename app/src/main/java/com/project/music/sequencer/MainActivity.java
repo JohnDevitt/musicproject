@@ -44,13 +44,15 @@ public class MainActivity extends ActionBarActivity {
                     public void onClick(View v) {
                         if (v.isActivated()) {
                             v.setActivated(false);
+                            v.setBackgroundResource(R.drawable.sequencer_theme_btn_default_holo_light);
                         } else {
                             v.setActivated(true);
+                            v.setBackgroundResource(R.drawable.sequencer_theme_btn_default_pressed_holo_light);
                         }
                     }
                 });
 
-        button.setBackgroundResource(R.drawable.sequencer_theme_activated_background_holo_light);
+        button.setBackgroundResource(R.drawable.sequencer_theme_btn_default_holo_light);
 
         return button;
     }

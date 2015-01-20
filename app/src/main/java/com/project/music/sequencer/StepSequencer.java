@@ -66,7 +66,7 @@ public class StepSequencer implements Runnable{
                     buttonMatrix[note][i].post(new TurnOn(note, i) {
                         @Override
                         public void run() {
-                            buttonMatrix[j][k].setBackgroundResource(R.drawable.sequencergreen_activated_background_holo_light);
+                            buttonMatrix[j][k].setBackgroundResource(R.drawable.sequencergreen_btn_default_focused_holo_light);
                         }
                     });
 
@@ -76,7 +76,7 @@ public class StepSequencer implements Runnable{
                     buttonMatrix[note][i].post(new TurnOff(note, i) {
                         @Override
                         public void run() {
-                            buttonMatrix[j][k].setBackgroundResource(R.drawable.sequencer_theme_activated_background_holo_light);
+                            buttonMatrix[j][k].setBackgroundResource(R.drawable.sequencer_theme_btn_default_pressed_holo_light);
                         }
                     });
 

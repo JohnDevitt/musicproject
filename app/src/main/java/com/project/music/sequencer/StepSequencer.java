@@ -1,12 +1,13 @@
 package com.project.music.sequencer;
 
-import java.util.concurrent.TimeUnit;
 import android.view.View;
+
+import java.util.concurrent.TimeUnit;
 
 /**
  * Created by john on 17/12/14.
  */
-public class StepSequencer implements Runnable {
+public class StepSequencer implements Runnable{
 
     private int rowCount;
     private int colCount;
@@ -18,7 +19,36 @@ public class StepSequencer implements Runnable {
         this.buttonMatrix = buttonMatrix;
     }
 
-    @Override
+    private static class TurnOn implements Runnable {
+        public final int j;
+        public final int k;
+
+        TurnOn(final int j, final int k) {
+            this.j = j;
+            this.k = k;
+        }
+
+        @Override
+        public void run() {
+
+        }
+    }
+
+    private static class TurnOff implements Runnable {
+        public final int j;
+        public final int k;
+
+        TurnOff(final int j, final int k) {
+            this.j = j;
+            this.k = k;
+        }
+
+        @Override
+        public void run() {
+
+        }
+    }
+
     public void run() {
 
         boolean hasActivated;
@@ -29,10 +59,28 @@ public class StepSequencer implements Runnable {
 
                 boolean[] notes = initializeNoteArray(rowCount, i);
                 hasActivated = hasActiveNote(notes);
-
+                int note = getNote(notes);
 
                 if(hasActivated) {
+
+                    buttonMatrix[note][i].post(new TurnOn(note, i) {
+                        @Override
+                        public void run() {
+                            buttonMatrix[j][k].setBackgroundColor(0xFFFF0000);
+                        }
+                    });
+
+
                     playService.play_notes(notes);
+
+                    buttonMatrix[note][i].post(new TurnOff(note, i) {
+                        @Override
+                        public void run() {
+                            buttonMatrix[j][k].setBackgroundColor(0xFF00FF00);
+                        }
+                    });
+
+
                 } else {
                     for (long stop=System.nanoTime()+ TimeUnit.MILLISECONDS.toNanos(250);stop>System.nanoTime();){}
                 }
@@ -40,6 +88,8 @@ public class StepSequencer implements Runnable {
             }
         }
     }
+
+
 
     private boolean[] initializeNoteArray(int rowCount, int colNum) {
         boolean[] notes = new boolean[rowCount];
@@ -62,5 +112,15 @@ public class StepSequencer implements Runnable {
         }
 
         return false;
+    }
+
+    private int getNote(boolean[] notes) {
+        for(int i = 0; i < notes.length; i++) {
+            if(notes[i] == true) {
+                return i;
+            }
+        }
+
+        return 0;
     }
 }

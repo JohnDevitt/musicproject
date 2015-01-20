@@ -3,13 +3,15 @@ package com.project.music.sequencer;
 import android.media.AudioFormat;
 import android.media.AudioManager;
 import android.media.AudioTrack;
+
+import java.util.EventListener;
 import java.util.HashMap;
 import java.util.concurrent.TimeUnit;
 
 /**
  * Created by john on 17/12/14.
  */
-public class PlayService {
+public class PlayService implements EventListener{
 
     private static final int sr = 44100;
     private static final int buffsize = AudioTrack.getMinBufferSize(sr,
@@ -27,23 +29,11 @@ public class PlayService {
 
 
     public void play_notes(boolean[] notes) {
-        boolean play = false;
+
 
         for (int i = 0; i < notes.length; i++) {
             if (notes[i] == true) {
-
-                // create thread
-
-
                 play_music(i);
-                /*
-                Runnable myRunnable = new Runnable(i) {
-
-                    @Override
-                    public void run(i) {
-
-                    }
-                };*/
                 return;
             }
         }
@@ -54,17 +44,18 @@ public class PlayService {
         short samples[] = new short[buffsize];
         int amp = 10000;
         double twopi = 8.*Math.atan(1.);
-        double fr;
         double ph = 0.0;
 
         audioTrack.play();
         for (long stop=System.nanoTime()+ TimeUnit.MILLISECONDS.toNanos(250);stop>System.nanoTime();){
-            // gets a weighting value from the slider on the GUI
-            fr = indexToFrequency.get(new Integer(pitch));
-            for(int i=0; i < buffsize; i++){
-                samples[i] = (short) (amp*Math.sin(ph));
+
+            double fr = indexToFrequency.get(new Integer(pitch));
+
+            for(int j = 0; j < buffsize; j++){
+                samples[j] = (short) (amp*Math.sin(ph));
                 ph += twopi*fr/sr;
             }
+
             audioTrack.write(samples, 0, buffsize);
         }
         audioTrack.stop();

@@ -1,12 +1,12 @@
 package com.project.music.sequencer;
 
-import android.support.v7.app.ActionBarActivity;
 import android.os.Bundle;
+import android.support.v7.app.ActionBarActivity;
 import android.view.Menu;
 import android.view.MenuItem;
-import android.widget.GridLayout;
-import android.widget.Button;
 import android.view.View;
+import android.widget.Button;
+import android.widget.GridLayout;
 
 
 public class MainActivity extends ActionBarActivity {
@@ -23,6 +23,7 @@ public class MainActivity extends ActionBarActivity {
             for(int column = 0; column < layout.getColumnCount(); column++) {
                 View button = generateButton();
                 buttonMatrix[row][column] = button;
+                buttonMatrix[row][column].setBackgroundColor(0xFF00FF00);
                 layout.addView(button);
             }
         }
@@ -49,7 +50,6 @@ public class MainActivity extends ActionBarActivity {
                         }
                     }
                 });
-
 
         return button;
     }

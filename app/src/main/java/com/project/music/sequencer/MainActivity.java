@@ -47,7 +47,7 @@ public class MainActivity extends ActionBarActivity {
                             v.setBackgroundResource(R.drawable.sequencer_theme_btn_default_holo_light);
                         } else {
                             v.setActivated(true);
-                            v.setBackgroundResource(R.drawable.sequencer_theme_btn_default_pressed_holo_light);
+                            v.setBackgroundResource(R.drawable.sequencer_theme_btn_default_focused_holo_light);
                         }
                     }
                 });

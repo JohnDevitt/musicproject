@@ -19,71 +19,28 @@ public class StepSequencer implements Runnable{
         this.buttonMatrix = buttonMatrix;
     }
 
-    private static class TurnOn implements Runnable {
-        public final int j;
-        public final int k;
-
-        TurnOn(final int j, final int k) {
-            this.j = j;
-            this.k = k;
-        }
-
-        @Override
-        public void run() {
-
-        }
-    }
-
-    private static class TurnOff implements Runnable {
-        public final int j;
-        public final int k;
-
-        TurnOff(final int j, final int k) {
-            this.j = j;
-            this.k = k;
-        }
-
-        @Override
-        public void run() {
-
-        }
-    }
-
     public void run() {
 
-        boolean hasActivated;
         PlayService playService = new PlayService();
 
         while(true) {
             for (int i = 0; i < colCount; i++) {
 
-                boolean[] notes = initializeNoteArray(rowCount, i);
-                hasActivated = hasActiveNote(notes);
-                int note = getNote(notes);
+                highlightCurrentColumn(i);
+
+                boolean[] notes = initializeNoteArray(i);
+                boolean hasActivated = hasActiveNote(notes);
+                int note = getActiveNote(notes);
 
                 if(hasActivated) {
-
-                    buttonMatrix[note][i].post(new TurnOn(note, i) {
-                        @Override
-                        public void run() {
-                            buttonMatrix[j][k].setBackgroundResource(R.drawable.sequencergreen_btn_default_focused_holo_light);
-                        }
-                    });
-
-
+                    buttonMatrix[note][i].post(new EditButton(buttonMatrix, note, i, R.drawable.sequencergreen_btn_default_focused_holo_light));
                     playService.play_notes(notes);
-
-                    buttonMatrix[note][i].post(new TurnOff(note, i) {
-                        @Override
-                        public void run() {
-                            buttonMatrix[j][k].setBackgroundResource(R.drawable.sequencer_theme_btn_default_pressed_holo_light);
-                        }
-                    });
-
-
+                    buttonMatrix[note][i].post(new EditButton(buttonMatrix, note, i, R.drawable.sequencer_theme_btn_default_pressed_holo_light));
                 } else {
                     for (long stop=System.nanoTime()+ TimeUnit.MILLISECONDS.toNanos(250);stop>System.nanoTime();){}
                 }
+
+                removeHighlightCurrentColumn(i);
 
             }
         }
@@ -91,9 +48,9 @@ public class StepSequencer implements Runnable{
 
 
 
-    private boolean[] initializeNoteArray(int rowCount, int colNum) {
+    private boolean[] initializeNoteArray(int colNum) {
         boolean[] notes = new boolean[rowCount];
-        for(int n = 0; n < notes.length; n++) {
+        for(int n = 0; n < rowCount; n++) {
             if(buttonMatrix[n][colNum].isActivated()) {
                 notes[n] = true;
             } else {
@@ -114,7 +71,7 @@ public class StepSequencer implements Runnable{
         return false;
     }
 
-    private int getNote(boolean[] notes) {
+    private int getActiveNote(boolean[] notes) {
         for(int i = 0; i < notes.length; i++) {
             if(notes[i] == true) {
                 return i;
@@ -122,5 +79,25 @@ public class StepSequencer implements Runnable{
         }
 
         return 0;
+    }
+
+    public void highlightCurrentColumn(int column) {
+        for(int row = 0; row < rowCount; row++) {
+            buttonMatrix[row][column].post(new EditButton(buttonMatrix, row, column, R.drawable.sequencer_theme_btn_default_pressed_holo_light));
+        }
+    }
+
+    public void removeHighlightCurrentColumn(int column) {
+        for(int row = 0; row < rowCount; row++) {
+            buttonMatrix[row][column].post(new EditButton(buttonMatrix, row, column, R.drawable.sequencer_theme_btn_default_holo_light));
+        }
+
+        boolean[] notes = initializeNoteArray(column);
+        boolean hasActivated = hasActiveNote(notes);
+        int note = getActiveNote(notes);
+
+        if(hasActivated) {
+            buttonMatrix[note][column].post(new EditButton(buttonMatrix, note, column, R.drawable.sequencer_theme_btn_default_focused_holo_light));
+        }
     }
 }

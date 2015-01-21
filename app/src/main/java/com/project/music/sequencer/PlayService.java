@@ -24,7 +24,7 @@ public class PlayService implements EventListener{
     private static HashMap<Integer, Long> indexToFrequency = new HashMap<Integer, Long>();
 
     public PlayService() {
-        initializeCMajorScale();
+        changeScale("CMajor");
     }
 
 
@@ -61,6 +61,21 @@ public class PlayService implements EventListener{
         audioTrack.stop();
     }
 
+    public void changeScale(String scale)
+    {
+        switch (scale) {
+            case "CMajor":
+                initializeCMajorScale();
+                break;
+            case "AMinor":
+                initializeAMinorScale();
+                break;
+            default:
+                initializeCMajorScale();
+                break;
+        }
+    }
+
     public void initializeCMajorScale() {
         indexToFrequency.put(new Integer(0), new Long(261));
         indexToFrequency.put(new Integer(1), new Long(293));
@@ -70,5 +85,16 @@ public class PlayService implements EventListener{
         indexToFrequency.put(new Integer(5), new Long(440));
         indexToFrequency.put(new Integer(6), new Long(493));
         indexToFrequency.put(new Integer(7), new Long(523));
+    }
+
+    public void initializeAMinorScale() {
+        indexToFrequency.put(new Integer(0), new Long(220));
+        indexToFrequency.put(new Integer(1), new Long(233));
+        indexToFrequency.put(new Integer(2), new Long(247));
+        indexToFrequency.put(new Integer(3), new Long(262));
+        indexToFrequency.put(new Integer(4), new Long(277));
+        indexToFrequency.put(new Integer(5), new Long(294));
+        indexToFrequency.put(new Integer(6), new Long(311));
+        indexToFrequency.put(new Integer(7), new Long(330));
     }
 }

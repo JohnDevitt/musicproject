@@ -11,6 +11,7 @@ public class StepSequencer implements Runnable{
 
     private int rowCount;
     private int colCount;
+    public boolean isPlaying = true;
     private static View[][] buttonMatrix;
 
     public StepSequencer(int rowCount, int colCount, View[][] buttonMatrix) {
@@ -21,28 +22,34 @@ public class StepSequencer implements Runnable{
 
     public void run() {
 
+        boolean play = this.isPlaying;
+
         PlayService playService = new PlayService();
+
 
         while(true) {
             for (int i = 0; i < colCount; i++) {
 
-                highlightCurrentColumn(i);
+                if(play){
+                    highlightCurrentColumn(i);
 
-                boolean[] notes = initializeNoteArray(i);
-                boolean hasActivated = hasActiveNote(notes);
-                int note = getActiveNote(notes);
+                    boolean[] notes = initializeNoteArray(i);
+                    boolean hasActivated = hasActiveNote(notes);
+                    int note = getActiveNote(notes);
 
-                if(hasActivated) {
-                    buttonMatrix[note][i].post(new EditButton(buttonMatrix, note, i, R.drawable.sequencergreen_btn_default_focused_holo_light));
-                    playService.play_notes(notes);
-                    buttonMatrix[note][i].post(new EditButton(buttonMatrix, note, i, R.drawable.sequencer_theme_btn_default_pressed_holo_light));
-                } else {
-                    for (long stop=System.nanoTime()+ TimeUnit.MILLISECONDS.toNanos(250);stop>System.nanoTime();){}
+                    if(hasActivated) {
+                        buttonMatrix[note][i].post(new EditButton(buttonMatrix, note, i, R.drawable.sequencergreen_btn_default_focused_holo_light));
+                        playService.play_notes(notes);
+                        buttonMatrix[note][i].post(new EditButton(buttonMatrix, note, i, R.drawable.sequencer_theme_btn_default_pressed_holo_light));
+                    } else {
+                        for (long stop=System.nanoTime()+ TimeUnit.MILLISECONDS.toNanos(250);stop>System.nanoTime();){}
+                    }
+
+                    removeHighlightCurrentColumn(i);
                 }
-
-                removeHighlightCurrentColumn(i);
-
+                play = getPlayStatus();
             }
+            play = getPlayStatus();
         }
     }
 
@@ -81,6 +88,7 @@ public class StepSequencer implements Runnable{
         return 0;
     }
 
+
     public void highlightCurrentColumn(int column) {
         for(int row = 0; row < rowCount; row++) {
             buttonMatrix[row][column].post(new EditButton(buttonMatrix, row, column, R.drawable.sequencer_theme_btn_default_pressed_holo_light));
@@ -98,6 +106,20 @@ public class StepSequencer implements Runnable{
 
         if(hasActivated) {
             buttonMatrix[note][column].post(new EditButton(buttonMatrix, note, column, R.drawable.sequencer_theme_btn_default_focused_holo_light));
+
+        }
+    }
+
+    public boolean getPlayStatus()
+    {
+        return this.isPlaying;
+    }
+
+    public void togglePlaying() {
+        if (this.isPlaying) {
+            this.isPlaying = false;
+        } else {
+            this.isPlaying = true;
         }
     }
 }

@@ -4,5 +4,16 @@
     <string name="app_name">sequencer</string>
     <string name="hello_world">Hello world!</string>
     <string name="action_settings">Settings</string>
+    <string-array name="scales_array">
+        <item>C Scale</item>
+        <item>The D Scale</item>
+        <item>A Minor Scale</item>
+    </string-array>
+
+    <string-array name="soundboard_array">
+        <item>Piano</item>
+        <item>Triangle</item>
+        <item>Tromboner</item>
+    </string-array>
 
 </resources>

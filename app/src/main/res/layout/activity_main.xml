@@ -4,36 +4,83 @@
     android:layout_height="fill_parent">
 
 
-<GridLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:bootstrap="http://schemas.android.com/apk/res-auto"
-    xmlns:tools="http://schemas.android.com/tools"
-    android:layout_width="wrap_content"
-    android:layout_height="wrap_content"
-    android:id="@+id/mainLayout"
-    android:rowCount = "8"
-    android:columnCount = "16"
-    tools:context="com.example.sequencer.MainActivity" >
-
-
-</GridLayout>
-
-<GridLayout
-    xmlns:android="http://schemas.android.com/apk/res/android"
-    android:layout_width="wrap_content"
-    android:layout_height="wrap_content"
-    android:id="@+id/controlPanel">
-
-
-    <Button
-        android:text="Play"
+    <GridLayout xmlns:android="http://schemas.android.com/apk/res/android"
+        xmlns:bootstrap="http://schemas.android.com/apk/res-auto"
+        xmlns:tools="http://schemas.android.com/tools"
         android:layout_width="wrap_content"
-        android:layout_height="wrap_content" />
+        android:layout_height="wrap_content"
+        android:id="@+id/mainLayout"
+        android:rowCount = "8"
+        android:columnCount = "16"
+        tools:context="com.example.sequencer.MainActivity" >
 
-    <Button
-        android:text="Stop"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"/>
 
-</GridLayout>
+    </GridLayout>
+
+    <GridLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:rowCount="2"
+        android:columnCount="5"
+        android:orientation="horizontal"
+        android:id="@+id/bottomGrid">
+
+        <Button
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Play"
+            android:id="@+id/playButton"
+            android:layout_row="0"
+            android:layout_column="0" />
+
+        <Button
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Stop"
+            android:id="@+id/stopButton"
+            android:layout_row="1"
+            android:layout_column="0" />
+
+        <Spinner
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:id="@+id/scales_array"
+            android:layout_row="0"
+            android:layout_column="1" />
+
+        <Spinner
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:id="@+id/soundboard_array"
+            android:layout_row="0"
+            android:layout_column="2" />
+
+        <SeekBar
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:id="@+id/tempoSeekBar"
+            android:layout_row="0"
+            android:layout_column="3" />
+
+        <Button
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Clear"
+            android:id="@+id/clearButton"
+            android:layout_row="0"
+            android:layout_column="4" />
+
+        <Button
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Random"
+            android:id="@+id/randomButton"
+            android:layout_row="1"
+            android:layout_column="4" />
+
+
+
+    </GridLayout>
+
 
 </LinearLayout>

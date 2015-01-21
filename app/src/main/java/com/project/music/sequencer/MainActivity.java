@@ -1,15 +1,21 @@
 package com.project.music.sequencer;
 
+import android.content.Context;
 import android.os.Bundle;
 import android.support.v7.app.ActionBarActivity;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.GridLayout;
+import android.widget.Spinner;
+import android.widget.Toast;
 
 
 public class MainActivity extends ActionBarActivity {
+
+    public StepSequencer sequencer;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -27,9 +33,53 @@ public class MainActivity extends ActionBarActivity {
             }
         }
 
-        StepSequencer sequencer = new StepSequencer(layout.getRowCount(), layout.getColumnCount(), buttonMatrix);
-        Thread myThread = new Thread(sequencer);
+
+        // FILL SCALES SPINNER
+        Spinner scales_spinner = (Spinner) findViewById(R.id.scales_array);
+        // Create an ArrayAdapter using the string array and a default spinner layout
+        ArrayAdapter<CharSequence> scales_adapter = ArrayAdapter.createFromResource(this,
+                R.array.scales_array, android.R.layout.simple_spinner_item);
+        // Specify the layout to use when the list of choices appears
+        scales_adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+        // Apply the adapter to the spinner
+        scales_spinner.setAdapter(scales_adapter);
+
+        // FILL SOUNDBOARD SPINNER
+        Spinner soundboard_spinner = (Spinner) findViewById(R.id.soundboard_array);
+        // Create an ArrayAdapter using the string array and a default spinner layout
+        ArrayAdapter<CharSequence> soundboard_adapter = ArrayAdapter.createFromResource(this,
+                R.array.soundboard_array, android.R.layout.simple_spinner_item);
+        // Specify the layout to use when the list of choices appears
+        soundboard_adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+        // Apply the adapter to the spinner
+        soundboard_spinner.setAdapter(soundboard_adapter);
+
+
+        // add button listener to play button and stop button
+        Button playButton=(Button) findViewById(R.id.playButton);
+
+        // add button listener to play button and stop button
+        Button stopButton=(Button) findViewById(R.id.stopButton);
+
+        this.sequencer = new StepSequencer(layout.getRowCount(), layout.getColumnCount(), buttonMatrix);
+        Thread myThread = new Thread(this.sequencer);
         myThread.start();
+
+
+        playButton.setOnClickListener(new View.OnClickListener() {
+
+            @Override
+            public void onClick(View v) {
+                MainActivity.this.getSequencer().togglePlaying();
+            }
+        });
+
+        stopButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                MainActivity.this.getSequencer().togglePlaying();
+            }
+        });
 
     }
 
@@ -75,5 +125,10 @@ public class MainActivity extends ActionBarActivity {
             return true;
         }
         return super.onOptionsItemSelected(item);
+    }
+
+    public StepSequencer getSequencer()
+    {
+        return this.sequencer;
     }
 }

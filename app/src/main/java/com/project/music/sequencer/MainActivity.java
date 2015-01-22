@@ -1,6 +1,5 @@
 package com.project.music.sequencer;
 
-import android.content.Context;
 import android.os.Bundle;
 import android.support.v7.app.ActionBarActivity;
 import android.view.Menu;
@@ -10,20 +9,22 @@ import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.GridLayout;
 import android.widget.Spinner;
-import android.widget.Toast;
 
 
 public class MainActivity extends ActionBarActivity {
 
     public StepSequencer sequencer;
+    GridLayout layout;
+    View[][] buttonMatrix;
+    Thread myThread;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        GridLayout layout = (GridLayout)findViewById(R.id.mainLayout);
-        View[][] buttonMatrix = new Button[layout.getRowCount()][layout.getColumnCount()];
+        layout = (GridLayout)findViewById(R.id.mainLayout);
+        buttonMatrix = new Button[layout.getRowCount()][layout.getColumnCount()];
 
         for(int row = 0; row < layout.getRowCount(); row++) {
             for(int column = 0; column < layout.getColumnCount(); column++) {
@@ -61,8 +62,12 @@ public class MainActivity extends ActionBarActivity {
         // add button listener to play button and stop button
         Button stopButton=(Button) findViewById(R.id.stopButton);
 
+        Button clearButton=(Button) findViewById(R.id.clearButton);
+
+        Button randomButton=(Button) findViewById(R.id.randomButton);
+
         this.sequencer = new StepSequencer(layout.getRowCount(), layout.getColumnCount(), buttonMatrix);
-        Thread myThread = new Thread(this.sequencer);
+        myThread = new Thread(this.sequencer);
         myThread.start();
 
 
@@ -79,6 +84,11 @@ public class MainActivity extends ActionBarActivity {
             public void onClick(View v) {
                 MainActivity.this.getSequencer().togglePlaying();
             }
+        });
+
+        clearButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) { myThread.stop(); }
         });
 
     }
@@ -105,6 +115,15 @@ public class MainActivity extends ActionBarActivity {
         button.setBackgroundResource(R.drawable.sequencer_theme_btn_default_holo_light);
 
         return button;
+    }
+
+    public void resetButtonMatrix() {
+        for(int i = 0; i < layout.getColumnCount(); i++) {
+            for(int j = 0; j < layout.getRowCount(); j++) {
+                buttonMatrix[i][j].setActivated(false);
+                buttonMatrix[i][j].setBackgroundResource(R.drawable.sequencer_theme_btn_default_holo_light);
+            }
+        }
     }
 
 

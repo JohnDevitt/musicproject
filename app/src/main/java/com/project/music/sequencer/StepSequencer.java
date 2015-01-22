@@ -12,6 +12,7 @@ public class StepSequencer implements Runnable{
     private int rowCount;
     private int colCount;
     public boolean isPlaying = true;
+    public PlayService playService;
     private static View[][] buttonMatrix;
 
     public StepSequencer(int rowCount, int colCount, View[][] buttonMatrix) {
@@ -24,7 +25,7 @@ public class StepSequencer implements Runnable{
 
         boolean play = this.isPlaying;
 
-        PlayService playService = new PlayService();
+        playService = new PlayService();
 
 
         while(true) {
@@ -115,11 +116,18 @@ public class StepSequencer implements Runnable{
         return this.isPlaying;
     }
 
-    public void togglePlaying() {
-        if (this.isPlaying) {
-            this.isPlaying = false;
-        } else {
-            this.isPlaying = true;
-        }
+    public void startPlay()
+    {
+        this.isPlaying = true;
+    }
+
+    public void stopPlay()
+    {
+        this.isPlaying = false;
+    }
+
+    public void changeScale(String scale)
+    {
+        playService.changeScale(scale);
     }
 }

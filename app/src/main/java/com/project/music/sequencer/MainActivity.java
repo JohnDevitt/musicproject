@@ -1,14 +1,17 @@
 package com.project.music.sequencer;
 
+import android.content.Context;
 import android.os.Bundle;
 import android.support.v7.app.ActionBarActivity;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.GridLayout;
 import android.widget.Spinner;
+import android.widget.Toast;
 
 
 public class MainActivity extends ActionBarActivity {
@@ -75,20 +78,38 @@ public class MainActivity extends ActionBarActivity {
 
             @Override
             public void onClick(View v) {
-                MainActivity.this.getSequencer().togglePlaying();
+                MainActivity.this.getSequencer().startPlay();
             }
         });
 
         stopButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                MainActivity.this.getSequencer().togglePlaying();
+                MainActivity.this.getSequencer().stopPlay();
             }
         });
 
-        clearButton.setOnClickListener(new View.OnClickListener() {
+        scales_spinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             @Override
-            public void onClick(View v) { myThread.stop(); }
+            public void onItemSelected(AdapterView<?> parentView, View selectedItemView, int position, long id) {
+
+                String selection = parentView.getItemAtPosition(position).toString();
+
+                MainActivity.this.getSequencer().changeScale(selection);
+
+                Context context = getApplicationContext();
+                CharSequence text = selection;
+                int duration = Toast.LENGTH_SHORT;
+
+                Toast toast = Toast.makeText(context, text, duration);
+                toast.show();
+
+            }
+
+            @Override
+            public void onNothingSelected(AdapterView<?> parentView) {
+                return;//MainActivity.this.getSequencer().changeScale("CMajor");
+            }
         });
 
     }

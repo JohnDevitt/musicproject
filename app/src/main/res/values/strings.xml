@@ -5,9 +5,8 @@
     <string name="hello_world">Hello world!</string>
     <string name="action_settings">Settings</string>
     <string-array name="scales_array">
-        <item>C Scale</item>
-        <item>The D Scale</item>
-        <item>A Minor Scale</item>
+        <item>CMajor</item>
+        <item>AMinor</item>
     </string-array>
 
     <string-array name="soundboard_array">

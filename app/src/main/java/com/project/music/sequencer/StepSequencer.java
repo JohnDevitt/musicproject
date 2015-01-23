@@ -31,15 +31,18 @@ public class StepSequencer implements Runnable{
 
 
         while(true) {
-            for (int i = 0; i < colCount; i++) {
 
-                if(play){
-                    highlightCurrentColumn(i);
 
-                    //boolean[] notes = initializeNoteArray(i);
-                    //boolean hasActivated = hasActiveNote(notes);
 
-                    //if(hasActivated) {
+                for (int i = 0; i < colCount; i++) {
+
+                    if(play){
+                        highlightCurrentColumn(i);
+
+                        //boolean[] notes = initializeNoteArray(i);
+                        //boolean hasActivated = hasActiveNote(notes);
+
+                        //if(hasActivated) {
                         for(int j = 0; j < rowCount; j++) {
                             if(buttonMatrix[j][i].isActivated() == true) {
                                 PlayService playServiceOne = new PlayService(j, speed);
@@ -47,14 +50,20 @@ public class StepSequencer implements Runnable{
                                 myThreadOne.start();
                             }
                         }
-                    //} else {
+                        //} else {
                         for (long stop=System.nanoTime()+ TimeUnit.MILLISECONDS.toNanos(speed);stop>System.nanoTime();){}
-                    //}
+                        //}
 
-                    removeHighlightCurrentColumn(i);
+                        removeHighlightCurrentColumn(i);
+                    }
+                    else
+                    {
+                        i = colCount;
+                    }
+
+                    play = getPlayStatus();
                 }
-                play = getPlayStatus();
-            }
+
             play = getPlayStatus();
         }
     }

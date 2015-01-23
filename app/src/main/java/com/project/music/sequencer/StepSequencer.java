@@ -2,8 +2,6 @@ package com.project.music.sequencer;
 
 import android.view.View;
 
-import java.util.concurrent.TimeUnit;
-
 /**
  * Created by john on 17/12/14.
  */
@@ -27,29 +25,25 @@ public class StepSequencer implements Runnable{
 
         boolean play = this.isPlaying;
 
-        playService = new PlayService();
-
 
         while(true) {
             for (int i = 0; i < colCount; i++) {
 
                 if(play){
                     highlightCurrentColumn(i);
-
-                    //boolean[] notes = initializeNoteArray(i);
-                    //boolean hasActivated = hasActiveNote(notes);
-
-                    //if(hasActivated) {
                         for(int j = 0; j < rowCount; j++) {
                             if(buttonMatrix[j][i].isActivated() == true) {
-                                PlayService playServiceOne = new PlayService(j, speed);
-                                Thread myThreadOne = new Thread(playServiceOne);
-                                myThreadOne.start();
+                                buttonMatrix[j][i].post(new EditButton(buttonMatrix, j, i, R.drawable.sequencergreen_btn_default_focused_holo_light));
+                                PlayService playService = new PlayService(j, speed);
+                                Thread myThread = new Thread(playService);
+                                myThread.start();
                             }
                         }
-                    //} else {
-                        for (long stop=System.nanoTime()+ TimeUnit.MILLISECONDS.toNanos(speed);stop>System.nanoTime();){}
-                    //}
+                    try {
+                        Thread.sleep(speed);
+                    } catch (InterruptedException e) {
+                        e.printStackTrace();
+                    }
 
                     removeHighlightCurrentColumn(i);
                 }
@@ -57,31 +51,6 @@ public class StepSequencer implements Runnable{
             }
             play = getPlayStatus();
         }
-    }
-
-
-
-    private boolean[] initializeNoteArray(int colNum) {
-        boolean[] notes = new boolean[rowCount];
-        for(int n = 0; n < rowCount; n++) {
-            if(buttonMatrix[n][colNum].isActivated()) {
-                notes[n] = true;
-            } else {
-                notes[n] = false;
-            }
-        }
-
-        return notes;
-    }
-
-    private boolean hasActiveNote(boolean[] notes) {
-        for(int i = 0; i < notes.length; i++) {
-            if(notes[i] == true) {
-                return true;
-            }
-        }
-
-        return false;
     }
 
 
@@ -118,7 +87,7 @@ public class StepSequencer implements Runnable{
 
     public void changeScale(String scale)
     {
-        playService.changeScale(scale);
+        PlayService.changeScale(scale);
     }
 
     public static void updateTempo(int tempo) {

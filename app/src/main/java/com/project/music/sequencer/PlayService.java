@@ -26,10 +26,6 @@ public class PlayService implements EventListener, Runnable{
 
     private static HashMap<Integer, Long> indexToFrequency = new HashMap<Integer, Long>();
 
-    public PlayService() {
-        changeScale("CMajor");
-    }
-
     public PlayService(int note, int speed) {
         this.note = note;
         this.speed = speed;
@@ -49,13 +45,13 @@ public class PlayService implements EventListener, Runnable{
         double ph = 0.0;
 
         audioTrack.play();
-        for (long stop=System.nanoTime()+ TimeUnit.MILLISECONDS.toNanos(speed);stop>System.nanoTime();){
+        for (long stop = System.nanoTime() + TimeUnit.MILLISECONDS.toNanos(speed); stop > System.nanoTime(); ) {
 
             double fr = indexToFrequency.get(new Integer(pitch));
 
-            for(int j = 0; j < buffsize; j++){
-                samples[j] = (short) (amp*Math.sin(ph));
-                ph += twopi*fr/sr;
+            for (int j = 0; j < buffsize; j++) {
+                samples[j] = (short) (amp * Math.sin(ph));
+                ph += twopi * fr / sr;
             }
 
             audioTrack.write(samples, 0, buffsize);
@@ -63,7 +59,7 @@ public class PlayService implements EventListener, Runnable{
         audioTrack.stop();
     }
 
-    public void changeScale(String scale)
+    public static void changeScale(String scale)
     {
         switch (scale) {
             case "CMajor":
@@ -78,7 +74,7 @@ public class PlayService implements EventListener, Runnable{
         }
     }
 
-    public void initializeCMajorScale() {
+    public static void initializeCMajorScale() {
         indexToFrequency.put(new Integer(0), new Long(261));
         indexToFrequency.put(new Integer(1), new Long(293));
         indexToFrequency.put(new Integer(2), new Long(329));
@@ -89,7 +85,7 @@ public class PlayService implements EventListener, Runnable{
         indexToFrequency.put(new Integer(7), new Long(523));
     }
 
-    public void initializeAMinorScale() {
+    public static void initializeAMinorScale() {
         indexToFrequency.put(new Integer(0), new Long(220));
         indexToFrequency.put(new Integer(1), new Long(233));
         indexToFrequency.put(new Integer(2), new Long(247));

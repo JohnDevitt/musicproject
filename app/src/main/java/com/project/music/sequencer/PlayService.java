@@ -11,7 +11,7 @@ import java.util.concurrent.TimeUnit;
 /**
  * Created by john on 17/12/14.
  */
-public class PlayService implements EventListener{
+public class PlayService implements EventListener, Runnable{
 
     private static final int sr = 44100;
     private static final int buffsize = AudioTrack.getMinBufferSize(sr,
@@ -21,25 +21,27 @@ public class PlayService implements EventListener{
             AudioFormat.ENCODING_PCM_16BIT, buffsize,
             AudioTrack.MODE_STREAM);
 
+    private int note;
+    private int speed;
+
     private static HashMap<Integer, Long> indexToFrequency = new HashMap<Integer, Long>();
 
     public PlayService() {
         changeScale("CMajor");
     }
 
-
-    public void play_notes(boolean[] notes, int speed) {
-
-
-        for (int i = 0; i < notes.length; i++) {
-            if (notes[i] == true) {
-                play_music(i, speed);
-                return;
-            }
-        }
+    public PlayService(int note, int speed) {
+        this.note = note;
+        this.speed = speed;
+        changeScale("CMajor");
     }
 
-    private void play_music(int pitch, int speed) {
+    public void run() {
+        play_music(this.note, this.speed);
+        return;
+    }
+
+    public void play_music(int pitch, int speed) {
 
         short samples[] = new short[buffsize];
         int amp = 10000;

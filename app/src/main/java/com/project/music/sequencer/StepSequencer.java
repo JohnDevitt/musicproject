@@ -14,7 +14,7 @@ public class StepSequencer implements Runnable{
     public boolean isPlaying = true;
     public PlayService playService;
     private static View[][] buttonMatrix;
-    private int speed;
+    private static int speed;
 
     public StepSequencer(int rowCount, int colCount, View[][] buttonMatrix, int speed) {
         this.rowCount = rowCount;
@@ -36,17 +36,20 @@ public class StepSequencer implements Runnable{
                 if(play){
                     highlightCurrentColumn(i);
 
-                    boolean[] notes = initializeNoteArray(i);
-                    boolean hasActivated = hasActiveNote(notes);
-                    int note = getActiveNote(notes);
+                    //boolean[] notes = initializeNoteArray(i);
+                    //boolean hasActivated = hasActiveNote(notes);
 
-                    if(hasActivated) {
-                        buttonMatrix[note][i].post(new EditButton(buttonMatrix, note, i, R.drawable.sequencergreen_btn_default_focused_holo_light));
-                        playService.play_notes(notes, speed);
-                        buttonMatrix[note][i].post(new EditButton(buttonMatrix, note, i, R.drawable.sequencer_theme_btn_default_pressed_holo_light));
-                    } else {
+                    //if(hasActivated) {
+                        for(int j = 0; j < rowCount; j++) {
+                            if(buttonMatrix[j][i].isActivated() == true) {
+                                PlayService playServiceOne = new PlayService(j, speed);
+                                Thread myThreadOne = new Thread(playServiceOne);
+                                myThreadOne.start();
+                            }
+                        }
+                    //} else {
                         for (long stop=System.nanoTime()+ TimeUnit.MILLISECONDS.toNanos(speed);stop>System.nanoTime();){}
-                    }
+                    //}
 
                     removeHighlightCurrentColumn(i);
                 }
@@ -81,16 +84,6 @@ public class StepSequencer implements Runnable{
         return false;
     }
 
-    private int getActiveNote(boolean[] notes) {
-        for(int i = 0; i < notes.length; i++) {
-            if(notes[i] == true) {
-                return i;
-            }
-        }
-
-        return 0;
-    }
-
 
     public void highlightCurrentColumn(int column) {
         for(int row = 0; row < rowCount; row++) {
@@ -100,16 +93,11 @@ public class StepSequencer implements Runnable{
 
     public void removeHighlightCurrentColumn(int column) {
         for(int row = 0; row < rowCount; row++) {
-            buttonMatrix[row][column].post(new EditButton(buttonMatrix, row, column, R.drawable.sequencer_theme_btn_default_holo_light));
-        }
-
-        boolean[] notes = initializeNoteArray(column);
-        boolean hasActivated = hasActiveNote(notes);
-        int note = getActiveNote(notes);
-
-        if(hasActivated) {
-            buttonMatrix[note][column].post(new EditButton(buttonMatrix, note, column, R.drawable.sequencer_theme_btn_default_focused_holo_light));
-
+            if(buttonMatrix[row][column].isActivated()) {
+                buttonMatrix[row][column].post(new EditButton(buttonMatrix, row, column, R.drawable.sequencer_theme_btn_default_focused_holo_light));
+            } else {
+                buttonMatrix[row][column].post(new EditButton(buttonMatrix, row, column, R.drawable.sequencer_theme_btn_default_holo_light));
+            }
         }
     }
 
@@ -131,5 +119,9 @@ public class StepSequencer implements Runnable{
     public void changeScale(String scale)
     {
         playService.changeScale(scale);
+    }
+
+    public static void updateTempo(int tempo) {
+        speed = tempo;
     }
 }

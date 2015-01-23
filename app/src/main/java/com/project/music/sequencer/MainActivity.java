@@ -10,6 +10,7 @@ import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.GridLayout;
+import android.widget.SeekBar;
 import android.widget.Spinner;
 import android.widget.Toast;
 
@@ -21,7 +22,7 @@ public class MainActivity extends ActionBarActivity {
     public StepSequencer sequencer;
     GridLayout layout;
     View[][] buttonMatrix;
-    Thread myThread;
+    static Thread myThread;
     int speed;
 
     @Override
@@ -40,12 +41,13 @@ public class MainActivity extends ActionBarActivity {
             }
         }
 
-        speed = 250;
+        speed = 550;
 
 
         // FILL SCALES SPINNER
         Spinner scales_spinner = (Spinner) findViewById(R.id.scales_array);
         // Create an ArrayAdapter using the string array and a default spinner layout
+
         ArrayAdapter<CharSequence> scales_adapter = ArrayAdapter.createFromResource(this,
                 R.array.scales_array, android.R.layout.simple_spinner_item);
         // Specify the layout to use when the list of choices appears
@@ -63,9 +65,27 @@ public class MainActivity extends ActionBarActivity {
 
         Button randomButton=(Button) findViewById(R.id.randomButton);
 
+        SeekBar seekBar=(SeekBar) findViewById(R.id.tempoSeekBar);
+
         this.sequencer = new StepSequencer(layout.getRowCount(), layout.getColumnCount(), buttonMatrix, speed);
         myThread = new Thread(this.sequencer);
         myThread.start();
+
+        seekBar.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
+            @Override
+            public void onProgressChanged(SeekBar seekBar, int progressValue, boolean fromUser) {
+                StepSequencer.updateTempo(progressValue + 250);
+            }
+
+            @Override
+            public void onStartTrackingTouch(SeekBar seekBar) {
+            }
+            @Override
+            public void onStopTrackingTouch(SeekBar seekBar) {
+            }
+
+        });
+
 
 
         playButton.setOnClickListener(new View.OnClickListener() {
@@ -144,6 +164,8 @@ public class MainActivity extends ActionBarActivity {
                 return;//MainActivity.this.getSequencer().changeScale("CMajor");
             }
         });
+
+
 
     }
 

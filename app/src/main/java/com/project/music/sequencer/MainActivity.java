@@ -1,5 +1,6 @@
 package com.project.music.sequencer;
 
+import android.app.Activity;
 import android.content.Context;
 import android.os.Bundle;
 import android.support.v7.app.ActionBarActivity;
@@ -11,13 +12,13 @@ import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.GridLayout;
 import android.widget.SeekBar;
+import android.widget.ImageButton;
 import android.widget.Spinner;
 import android.widget.Toast;
-
 import java.util.Random;
 
 
-public class MainActivity extends ActionBarActivity {
+public class MainActivity extends Activity {
 
     public StepSequencer sequencer;
     GridLayout layout;
@@ -56,14 +57,14 @@ public class MainActivity extends ActionBarActivity {
         scales_spinner.setAdapter(scales_adapter);
 
         // add button listener to play button and stop button
-        Button playButton=(Button) findViewById(R.id.playButton);
+        ImageButton playButton=(ImageButton) findViewById(R.id.playButton);
 
         // add button listener to play button and stop button
-        Button stopButton=(Button) findViewById(R.id.stopButton);
+        ImageButton stopButton=(ImageButton) findViewById(R.id.stopButton);
 
-        Button clearButton=(Button) findViewById(R.id.clearButton);
+        ImageButton clearButton=(ImageButton) findViewById(R.id.clearButton);
 
-        Button randomButton=(Button) findViewById(R.id.randomButton);
+        ImageButton randomButton=(ImageButton) findViewById(R.id.randomButton);
 
         SeekBar seekBar=(SeekBar) findViewById(R.id.tempoSeekBar);
 

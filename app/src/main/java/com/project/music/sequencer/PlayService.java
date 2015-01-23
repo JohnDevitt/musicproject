@@ -28,18 +28,18 @@ public class PlayService implements EventListener{
     }
 
 
-    public void play_notes(boolean[] notes) {
+    public void play_notes(boolean[] notes, int speed) {
 
 
         for (int i = 0; i < notes.length; i++) {
             if (notes[i] == true) {
-                play_music(i);
+                play_music(i, speed);
                 return;
             }
         }
     }
 
-    private void play_music(int pitch) {
+    private void play_music(int pitch, int speed) {
 
         short samples[] = new short[buffsize];
         int amp = 10000;
@@ -47,7 +47,7 @@ public class PlayService implements EventListener{
         double ph = 0.0;
 
         audioTrack.play();
-        for (long stop=System.nanoTime()+ TimeUnit.MILLISECONDS.toNanos(250);stop>System.nanoTime();){
+        for (long stop=System.nanoTime()+ TimeUnit.MILLISECONDS.toNanos(speed);stop>System.nanoTime();){
 
             double fr = indexToFrequency.get(new Integer(pitch));
 

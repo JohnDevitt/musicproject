@@ -12,6 +12,7 @@
         android:id="@+id/mainLayout"
         android:rowCount = "8"
         android:columnCount = "16"
+        android:orientation="horizontal"
         tools:context="com.example.sequencer.MainActivity" >
 
 

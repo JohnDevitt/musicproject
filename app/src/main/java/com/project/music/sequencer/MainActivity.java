@@ -13,6 +13,8 @@ import android.widget.GridLayout;
 import android.widget.Spinner;
 import android.widget.Toast;
 
+import java.util.Random;
+
 
 public class MainActivity extends ActionBarActivity {
 
@@ -20,6 +22,7 @@ public class MainActivity extends ActionBarActivity {
     GridLayout layout;
     View[][] buttonMatrix;
     Thread myThread;
+    int speed;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -37,6 +40,8 @@ public class MainActivity extends ActionBarActivity {
             }
         }
 
+        speed = 250;
+
 
         // FILL SCALES SPINNER
         Spinner scales_spinner = (Spinner) findViewById(R.id.scales_array);
@@ -48,17 +53,6 @@ public class MainActivity extends ActionBarActivity {
         // Apply the adapter to the spinner
         scales_spinner.setAdapter(scales_adapter);
 
-        // FILL SOUNDBOARD SPINNER
-        Spinner soundboard_spinner = (Spinner) findViewById(R.id.soundboard_array);
-        // Create an ArrayAdapter using the string array and a default spinner layout
-        ArrayAdapter<CharSequence> soundboard_adapter = ArrayAdapter.createFromResource(this,
-                R.array.soundboard_array, android.R.layout.simple_spinner_item);
-        // Specify the layout to use when the list of choices appears
-        soundboard_adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
-        // Apply the adapter to the spinner
-        soundboard_spinner.setAdapter(soundboard_adapter);
-
-
         // add button listener to play button and stop button
         Button playButton=(Button) findViewById(R.id.playButton);
 
@@ -69,7 +63,7 @@ public class MainActivity extends ActionBarActivity {
 
         Button randomButton=(Button) findViewById(R.id.randomButton);
 
-        this.sequencer = new StepSequencer(layout.getRowCount(), layout.getColumnCount(), buttonMatrix);
+        this.sequencer = new StepSequencer(layout.getRowCount(), layout.getColumnCount(), buttonMatrix, speed);
         myThread = new Thread(this.sequencer);
         myThread.start();
 
@@ -84,8 +78,47 @@ public class MainActivity extends ActionBarActivity {
 
         stopButton.setOnClickListener(new View.OnClickListener() {
             @Override
+            public void onClick(View v) { MainActivity.this.getSequencer().stopPlay(); }
+        });
+
+        clearButton.setOnClickListener(new View.OnClickListener() {
+            @Override
             public void onClick(View v) {
                 MainActivity.this.getSequencer().stopPlay();
+
+                for(int i = 0; i < layout.getRowCount(); i++) {
+                    for(int j = 0; j < layout.getColumnCount(); j++) {
+                        buttonMatrix[i][j].setActivated(false);
+                        buttonMatrix[i][j].setBackgroundResource(R.drawable.sequencer_theme_btn_default_holo_light);
+                    }
+                }
+
+                MainActivity.this.getSequencer().startPlay();
+            }
+        });
+
+        randomButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                MainActivity.this.getSequencer().stopPlay();
+                Random rand = new Random();
+
+                for(int i = 0; i < layout.getRowCount(); i++) {
+                    for(int j = 0; j < layout.getColumnCount(); j++) {
+                        buttonMatrix[i][j].setActivated(false);
+                        buttonMatrix[i][j].setBackgroundResource(R.drawable.sequencer_theme_btn_default_holo_light);
+                    }
+                }
+
+                for(int i = 0; i < layout.getColumnCount(); i++) {
+                    int note = (rand.nextInt(8));
+                    if(note != 0) {
+                        buttonMatrix[note][i].setActivated(true);
+                        buttonMatrix[note][i].setBackgroundResource(R.drawable.sequencer_theme_btn_default_focused_holo_light);
+                    }
+                }
+
+                MainActivity.this.getSequencer().startPlay();
             }
         });
 
@@ -136,15 +169,6 @@ public class MainActivity extends ActionBarActivity {
         button.setBackgroundResource(R.drawable.sequencer_theme_btn_default_holo_light);
 
         return button;
-    }
-
-    public void resetButtonMatrix() {
-        for(int i = 0; i < layout.getColumnCount(); i++) {
-            for(int j = 0; j < layout.getRowCount(); j++) {
-                buttonMatrix[i][j].setActivated(false);
-                buttonMatrix[i][j].setBackgroundResource(R.drawable.sequencer_theme_btn_default_holo_light);
-            }
-        }
     }
 
 

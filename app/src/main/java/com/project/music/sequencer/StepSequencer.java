@@ -14,11 +14,13 @@ public class StepSequencer implements Runnable{
     public boolean isPlaying = true;
     public PlayService playService;
     private static View[][] buttonMatrix;
+    private int speed;
 
-    public StepSequencer(int rowCount, int colCount, View[][] buttonMatrix) {
+    public StepSequencer(int rowCount, int colCount, View[][] buttonMatrix, int speed) {
         this.rowCount = rowCount;
         this.colCount = colCount;
         this.buttonMatrix = buttonMatrix;
+        this.speed = speed;
     }
 
     public void run() {
@@ -40,10 +42,10 @@ public class StepSequencer implements Runnable{
 
                     if(hasActivated) {
                         buttonMatrix[note][i].post(new EditButton(buttonMatrix, note, i, R.drawable.sequencergreen_btn_default_focused_holo_light));
-                        playService.play_notes(notes);
+                        playService.play_notes(notes, speed);
                         buttonMatrix[note][i].post(new EditButton(buttonMatrix, note, i, R.drawable.sequencer_theme_btn_default_pressed_holo_light));
                     } else {
-                        for (long stop=System.nanoTime()+ TimeUnit.MILLISECONDS.toNanos(250);stop>System.nanoTime();){}
+                        for (long stop=System.nanoTime()+ TimeUnit.MILLISECONDS.toNanos(speed);stop>System.nanoTime();){}
                     }
 
                     removeHighlightCurrentColumn(i);

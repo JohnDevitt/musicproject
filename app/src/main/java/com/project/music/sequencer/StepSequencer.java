@@ -27,10 +27,12 @@ public class StepSequencer implements Runnable{
 
 
         while(true) {
-            for (int i = 0; i < colCount; i++) {
 
-                if(play){
-                    highlightCurrentColumn(i);
+                for (int i = 0; i < colCount; i++) {
+
+                    if(play){
+                        highlightCurrentColumn(i);
+
                         for(int j = 0; j < rowCount; j++) {
                             if(buttonMatrix[j][i].isActivated() == true) {
                                 buttonMatrix[j][i].post(new EditButton(buttonMatrix, j, i, R.drawable.sequencergreen_btn_default_focused_holo_light));
@@ -39,16 +41,24 @@ public class StepSequencer implements Runnable{
                                 myThread.start();
                             }
                         }
-                    try {
-                        Thread.sleep(speed);
-                    } catch (InterruptedException e) {
-                        e.printStackTrace();
+
+                        try {
+                            Thread.sleep(speed);
+                        } catch (InterruptedException e) {
+                            e.printStackTrace();
+                        }
+
+
+                        removeHighlightCurrentColumn(i);
+                    }
+                    else
+                    {
+                        i = colCount;
                     }
 
-                    removeHighlightCurrentColumn(i);
+                    play = getPlayStatus();
                 }
-                play = getPlayStatus();
-            }
+
             play = getPlayStatus();
         }
     }

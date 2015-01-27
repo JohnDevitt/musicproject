@@ -45,7 +45,7 @@ public class PlayService implements EventListener, Runnable{
         this.sample = new double[numSamples];
         generatedSnd = new byte[2 * numSamples];
 
-        changeScale("CMajor"); // Default scales
+        //changeScale("CMajor"); // Default scales
     }
 
     public void run()

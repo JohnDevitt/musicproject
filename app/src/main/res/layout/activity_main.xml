@@ -61,6 +61,7 @@
             android:layout_height="75dp"
             android:layout_weight="0.1"
             android:id="@+id/playButton"
+            android:background="@drawable/sequencergrey_btn_default_normal_holo_light"
             android:src="@android:drawable/ic_media_play"/>
 
         <ImageButton
@@ -68,7 +69,8 @@
             android:layout_height="75dp"
             android:layout_weight="0.1"
             android:id="@+id/stopButton"
-            android:src="@android:drawable/ic_media_pause"/>
+            android:background="@drawable/sequencergrey_btn_default_normal_holo_light"
+            android:src="@drawable/stop_button"/>
 
         <LinearLayout
             android:orientation="vertical"
@@ -86,7 +88,9 @@
             <Spinner
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:id="@+id/scales_array" />
+                android:id="@+id/scales_array"
+                android:background="@drawable/sequencerlgrey_btn_default_holo_light"
+            />
 
 
         </LinearLayout>
@@ -109,7 +113,8 @@
                 android:layout_height="38dp"
                 android:max="750"
                 android:id="@+id/tempoSeekBar"
-                />
+
+            />
 
         </LinearLayout>
 
@@ -119,14 +124,16 @@
             android:layout_height="75dp"
             android:layout_weight="0.1"
             android:id="@+id/clearButton"
-            android:src="@android:drawable/ic_notification_clear_all"/>
+            android:background="@drawable/sequencergrey_btn_default_normal_holo_light"
+            android:src="@drawable/clear_button"/>
 
         <ImageButton
             android:layout_width="0dip"
             android:layout_height="75dp"
             android:layout_weight="0.1"
             android:id="@+id/randomButton"
-            android:src="@android:drawable/ic_notification_clear_all"/>
+            android:background="@drawable/sequencergrey_btn_default_normal_holo_light"
+            android:src="@drawable/random_button"/>
 
 
 

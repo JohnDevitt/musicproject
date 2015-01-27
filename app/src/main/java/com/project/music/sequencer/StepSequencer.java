@@ -18,7 +18,9 @@ public class StepSequencer implements Runnable{
     private int defaultButton = R.drawable.sequencergrey_btn_default_normal_holo_light;
     private int pressedButton = R.drawable.sequencerred_btn_default_normal_holo_light;
     private int highlightedButton = R.drawable.sequencergreen_btn_default_normal_holo_light;
-    private int rowButton = R.drawable.sequencergrey_btn_default_pressed_holo_light;
+    private int rowButton = R.drawable.sequencerlgrey_btn_default_normal_holo_light;
+
+    public PlayService playService;
 
     public StepSequencer(int rowCount, int colCount, View[][] buttonMatrix, int speed) {
         this.rowCount = rowCount;
@@ -31,6 +33,7 @@ public class StepSequencer implements Runnable{
     public void run() {
 
         boolean play = this.isPlaying;
+        PlayService.changeScale("CMajor");
 
 
         // This is the main loop, it will return the sequencer back to the first step after it has
@@ -50,7 +53,7 @@ public class StepSequencer implements Runnable{
                             // If any note is selected(a.k.a. if any button is pressed)
                             if(buttonMatrix[j][i].isActivated() == true) {
                                 // Then we spawn a thread to play that note
-                                PlayService playService = new PlayService(j, speed);
+                                playService = new PlayService(j, speed);
                                 Thread myThread = new Thread(playService);
                                 myThread.start();
                                 // We also make a slight tweak to the UI to show that note is being played
@@ -125,9 +128,16 @@ public class StepSequencer implements Runnable{
     }
 
     // This method changes the static scale variable in the PlayService class
-    public static void changeScale(String scale)
+    public void changeScale(String scale)
     {
         PlayService.changeScale(scale);
+        /*
+        if(playService != null)
+        {
+            System.out.println("playService is not null");
+            playService.setScale(scale);
+        }
+        */
     }
 
     // This updates the static tempo variable in the PlayService class

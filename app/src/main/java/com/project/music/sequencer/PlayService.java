@@ -6,24 +6,25 @@ import android.media.AudioTrack;
 
 import java.util.EventListener;
 import java.util.HashMap;
-import java.util.concurrent.TimeUnit;
+
 
 /**
- * Created by john on 17/12/14.
- */
+ *  PlayService
+ *
+ *  Class is in control of making the actual noises of the app.
+ **/
 public class PlayService implements EventListener, Runnable{
 
-    private static final int sr = 44100;
-    private static final int buffsize = AudioTrack.getMinBufferSize(sr,
-            AudioFormat.CHANNEL_OUT_MONO, AudioFormat.ENCODING_PCM_16BIT);
-            AudioTrack audioTrack = new AudioTrack(AudioManager.STREAM_MUSIC,
-            sr, AudioFormat.CHANNEL_OUT_MONO,
-            AudioFormat.ENCODING_PCM_16BIT, buffsize,
-            AudioTrack.MODE_STREAM);
+    private final double duration = 0.75; // seconds
+    private final int sampleRate = 8000;
+    private final int numSamples = (new Double(duration * sampleRate)).intValue();
+    private final double sample[] = new double[numSamples];
+    private final byte generatedSnd[] = new byte[2 * numSamples];
 
     private int note;
     private int speed;
 
+    private AudioTrack audioTrack;
     private static HashMap<Integer, Long> indexToFrequency = new HashMap<Integer, Long>();
 
     public PlayService(int note, int speed) {
@@ -33,55 +34,26 @@ public class PlayService implements EventListener, Runnable{
     }
 
     public void run() {
+
         playSound(this.note, this.speed);
+
+        try {
+            Thread.sleep(speed);
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
+        audioTrack.release();
         return;
     }
 
-    public void play_music(int pitch, int speed) {
-
-        short samples[] = new short[buffsize];
-        int amp = 10000;
-        double twopi = 8.*Math.atan(1.);
-        double ph = 0.0;
-
-        audioTrack.play();
-        for (long stop = System.nanoTime() + TimeUnit.MILLISECONDS.toNanos(speed); stop > System.nanoTime(); ) {
-
-            double fr = indexToFrequency.get(new Integer(pitch));
-
-            for (int j = 0; j < buffsize; j++) {
-                samples[j] = (short) (amp * Math.sin(ph));
-                ph += twopi * fr / sr;
-            }
-
-            audioTrack.write(samples, 0, buffsize);
-        }
-        audioTrack.stop();
-    }
-
-    public static void changeScale(String scale)
-    {
-        switch (scale) {
-            case "CMajor":
-                initializeCMajorScale();
-                break;
-            case "AMinor":
-                initializeAMinorScale();
-                break;
-            default:
-                initializeCMajorScale();
-                break;
-        }
-    }
-
-    private final int duration = 1; // seconds
-    private final int sampleRate = 8000;
-    private final int numSamples = duration * sampleRate;
-    private final double sample[] = new double[numSamples];
-    //private final double freqOfTone = 440; // hz
-
-    private final byte generatedSnd[] = new byte[2 * numSamples];
-
+    /**
+     *  genTone
+     *
+     *  Generates the tone to be played by pitch and speed.
+     *
+     *  @param pitch    which note is being sent in
+     *  @param speed    speed of play, tempo
+     **/
     void genTone(int pitch, int speed){
         double freqOfTone = indexToFrequency.get(new Integer(pitch));
         // fill out the array
@@ -120,17 +92,66 @@ public class PlayService implements EventListener, Runnable{
         }
     }
 
+    /**
+     *  playSound
+     *
+     *  Plays the generated tone.
+     *
+     *  @param pitch    which note is being sent in
+     *  @param speed    speed of play, tempo
+     **/
     void playSound(int pitch, int speed)
     {
+        // Generate the tone first
         genTone(pitch, speed);
 
-        final AudioTrack audioTrack = new AudioTrack(AudioManager.STREAM_MUSIC,
+        // Plays the tone
+        audioTrack = new AudioTrack(AudioManager.STREAM_MUSIC,
                 sampleRate, AudioFormat.CHANNEL_OUT_MONO,
                 AudioFormat.ENCODING_PCM_16BIT, generatedSnd.length,
                 AudioTrack.MODE_STATIC);
         audioTrack.write(generatedSnd, 0, generatedSnd.length);
         audioTrack.play();
     }
+
+
+    /**
+     *  changeScale
+     *
+     *  Function initializes hash table of frequencies for different scales.
+     *
+     *  @param scale    input string to pick scale
+     **/
+    public static void changeScale(String scale)
+    {
+        switch (scale) {
+            case "AMinor":
+                initializeAMinorScale();
+                break;
+            case "BMajor":
+                initializeBMajorScale();
+                break;
+            case "CMajor":
+                initializeCMajorScale();
+                break;
+            case "DMajor":
+                initializeDMajorScale();
+                break;
+            case "EMajor":
+                initializeEMajorScale();
+                break;
+            case "FMajor":
+                initializeFMajorScale();
+                break;
+            case "GMajor":
+                initializeGMajorScale();
+                break;
+            default:
+                initializeCMajorScale();
+                break;
+        }
+    }
+
 
     public static void initializeCMajorScale() {
         indexToFrequency.put(new Integer(0), new Long(261));
@@ -153,4 +174,60 @@ public class PlayService implements EventListener, Runnable{
         indexToFrequency.put(new Integer(6), new Long(311));
         indexToFrequency.put(new Integer(7), new Long(330));
     }
+
+    public static void initializeGMajorScale() {
+        indexToFrequency.put(new Integer(0), new Long(392)); // G4
+        indexToFrequency.put(new Integer(1), new Long(440)); // A4
+        indexToFrequency.put(new Integer(2), new Long(494)); // B4
+        indexToFrequency.put(new Integer(3), new Long(523)); // C5
+        indexToFrequency.put(new Integer(4), new Long(587)); // D5
+        indexToFrequency.put(new Integer(5), new Long(659)); // E5
+        indexToFrequency.put(new Integer(6), new Long(740)); // F#5
+        indexToFrequency.put(new Integer(7), new Long(784)); // G5
+    }
+
+    public static void initializeDMajorScale() {
+        indexToFrequency.put(new Integer(0), new Long(294)); // D4
+        indexToFrequency.put(new Integer(1), new Long(330)); // E4
+        indexToFrequency.put(new Integer(2), new Long(370)); // F#
+        indexToFrequency.put(new Integer(3), new Long(392)); // G4
+        indexToFrequency.put(new Integer(4), new Long(440)); // A4
+        indexToFrequency.put(new Integer(5), new Long(493)); // B4
+        indexToFrequency.put(new Integer(6), new Long(554)); // C#
+        indexToFrequency.put(new Integer(7), new Long(587)); // D5
+    }
+
+    public static void initializeEMajorScale() {
+        indexToFrequency.put(new Integer(1), new Long(330)); // E4
+        indexToFrequency.put(new Integer(2), new Long(370)); // F#
+        indexToFrequency.put(new Integer(2), new Long(415)); // G#
+        indexToFrequency.put(new Integer(3), new Long(440)); // A4
+        indexToFrequency.put(new Integer(4), new Long(493)); // B4
+        indexToFrequency.put(new Integer(5), new Long(554)); // C#
+        indexToFrequency.put(new Integer(6), new Long(622)); // D#
+        indexToFrequency.put(new Integer(7), new Long(659)); // E5
+    }
+
+    public static void initializeFMajorScale() {
+        indexToFrequency.put(new Integer(1), new Long(349)); // F4
+        indexToFrequency.put(new Integer(2), new Long(392)); // G4
+        indexToFrequency.put(new Integer(2), new Long(440)); // A4
+        indexToFrequency.put(new Integer(3), new Long(466)); // A#
+        indexToFrequency.put(new Integer(4), new Long(523)); // C5
+        indexToFrequency.put(new Integer(5), new Long(587)); // D5
+        indexToFrequency.put(new Integer(6), new Long(659)); // E5
+        indexToFrequency.put(new Integer(7), new Long(698)); // F5
+    }
+
+    public static void initializeBMajorScale() {
+        indexToFrequency.put(new Integer(1), new Long(494)); // B4
+        indexToFrequency.put(new Integer(2), new Long(554)); // C#
+        indexToFrequency.put(new Integer(2), new Long(622)); // D#
+        indexToFrequency.put(new Integer(3), new Long(659)); // E5
+        indexToFrequency.put(new Integer(4), new Long(740)); // F#
+        indexToFrequency.put(new Integer(5), new Long(831)); // G#
+        indexToFrequency.put(new Integer(6), new Long(932)); // A#
+        indexToFrequency.put(new Integer(7), new Long(988)); // B5
+    }
+
 }

@@ -2,9 +2,7 @@ package com.project.music.sequencer;
 
 import android.app.Activity;
 import android.content.Context;
-import android.graphics.drawable.Drawable;
 import android.os.Bundle;
-import android.support.v7.app.ActionBarActivity;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -16,6 +14,7 @@ import android.widget.SeekBar;
 import android.widget.ImageButton;
 import android.widget.Spinner;
 import android.widget.Toast;
+
 import java.util.Random;
 
 
@@ -26,6 +25,7 @@ public class MainActivity extends Activity {
     View[][] buttonMatrix;
     static Thread myThread;
     int speed;
+
     private int defaultButton = R.drawable.sequencergrey_btn_default_normal_holo_light;
     private int pressedButton = R.drawable.sequencerred_btn_default_normal_holo_light;
     private int highlightedButton = R.drawable.sequencergreen_btn_default_normal_holo_light;
@@ -33,51 +33,52 @@ public class MainActivity extends Activity {
 
 
     @Override
-    protected void onCreate(Bundle savedInstanceState) {
+    protected void onCreate(Bundle savedInstanceState)
+    {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
+        // Generate and fill matrix with sequencer buttons
         layout = (GridLayout)findViewById(R.id.mainLayout);
-        buttonMatrix = new Button[layout.getRowCount()][layout.getColumnCount()];
+        buttonMatrix = new Button[layout.getRowCount()][layout.getColumnCount()]; // Empty array of buttons
 
+        // Fill button array with buttons
         for(int row = 0; row < layout.getRowCount(); row++) {
             for(int column = 0; column < layout.getColumnCount(); column++) {
-                View button = generateButton();
-                buttonMatrix[row][column] = button;
-                layout.addView(button);
+                View button = generateButton(); // Generate button
+                buttonMatrix[row][column] = button; // Put button into button array
+                layout.addView(button); // Add button
             }
         }
 
         speed = 550;
 
 
-        // FILL SCALES SPINNER
+        // START: Fill scales spinner with our different scales
         Spinner scales_spinner = (Spinner) findViewById(R.id.scales_array);
         // Create an ArrayAdapter using the string array and a default spinner layout
-
         ArrayAdapter<CharSequence> scales_adapter = ArrayAdapter.createFromResource(this,
                 R.array.scales_array, android.R.layout.simple_spinner_item);
         // Specify the layout to use when the list of choices appears
         scales_adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
         // Apply the adapter to the spinner
         scales_spinner.setAdapter(scales_adapter);
+        // END
 
-        // add button listener to play button and stop button
+        // Initialize controls, i.e. play, stop etc.
         ImageButton playButton=(ImageButton) findViewById(R.id.playButton);
-
-        // add button listener to play button and stop button
         ImageButton stopButton=(ImageButton) findViewById(R.id.stopButton);
-
         ImageButton clearButton=(ImageButton) findViewById(R.id.clearButton);
-
         ImageButton randomButton=(ImageButton) findViewById(R.id.randomButton);
-
         SeekBar seekBar=(SeekBar) findViewById(R.id.tempoSeekBar);
 
+        // Initialize StepSequencer
         this.sequencer = new StepSequencer(layout.getRowCount(), layout.getColumnCount(), buttonMatrix, speed);
         myThread = new Thread(this.sequencer);
         myThread.start();
 
+
+        // Add listener to tempo seek bar
         seekBar.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
             @Override
             public void onProgressChanged(SeekBar seekBar, int progressValue, boolean fromUser) {
@@ -94,20 +95,38 @@ public class MainActivity extends Activity {
         });
 
 
-
+        // Add onClick listener to play button
         playButton.setOnClickListener(new View.OnClickListener() {
-
             @Override
-            public void onClick(View v) {
+            public void onClick(View v)
+            {
                 MainActivity.this.getSequencer().startPlay();
+
+                Context context = getApplicationContext();
+                CharSequence text = "Play";
+                int duration = Toast.LENGTH_SHORT;
+
+                Toast toast = Toast.makeText(context, text, duration);
+                toast.show();
             }
         });
 
+        // Add onClick listener to stop button
         stopButton.setOnClickListener(new View.OnClickListener() {
             @Override
-            public void onClick(View v) { MainActivity.this.getSequencer().stopPlay(); }
+            public void onClick(View v)
+            {
+                MainActivity.this.getSequencer().stopPlay();
+                Context context = getApplicationContext();
+                CharSequence text = "Stop";
+                int duration = Toast.LENGTH_SHORT;
+
+                Toast toast = Toast.makeText(context, text, duration);
+                toast.show();
+            }
         });
 
+        // Add onClick listener to clear button
         clearButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -121,15 +140,24 @@ public class MainActivity extends Activity {
                 }
 
                 MainActivity.this.getSequencer().startPlay();
+
+                Context context = getApplicationContext();
+                CharSequence text = "Cleared Selection";
+                int duration = Toast.LENGTH_SHORT;
+
+                Toast toast = Toast.makeText(context, text, duration);
+                toast.show();
             }
         });
 
+        // Add onClick listener to random button
         randomButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 MainActivity.this.getSequencer().stopPlay();
                 Random rand = new Random();
 
+                // Set buttons to default
                 for(int i = 0; i < layout.getRowCount(); i++) {
                     for(int j = 0; j < layout.getColumnCount(); j++) {
                         buttonMatrix[i][j].setActivated(false);
@@ -137,6 +165,7 @@ public class MainActivity extends Activity {
                     }
                 }
 
+                // Set random buttons to activated
                 for(int i = 0; i < layout.getColumnCount(); i++) {
                     int note = (rand.nextInt(8));
                     if(note != 0) {
@@ -145,10 +174,19 @@ public class MainActivity extends Activity {
                     }
                 }
 
+                // Start sequencer (play)
                 MainActivity.this.getSequencer().startPlay();
+
+                Context context = getApplicationContext();
+                CharSequence text = "Random Selection";
+                int duration = Toast.LENGTH_SHORT;
+
+                Toast toast = Toast.makeText(context, text, duration);
+                toast.show();
             }
         });
 
+        // Add onClick listener to scales selector
         scales_spinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             @Override
             public void onItemSelected(AdapterView<?> parentView, View selectedItemView, int position, long id) {
@@ -158,7 +196,7 @@ public class MainActivity extends Activity {
                 MainActivity.this.getSequencer().changeScale(selection);
 
                 Context context = getApplicationContext();
-                CharSequence text = selection;
+                CharSequence text = "Changed Scale: " + selection;
                 int duration = Toast.LENGTH_SHORT;
 
                 Toast toast = Toast.makeText(context, text, duration);

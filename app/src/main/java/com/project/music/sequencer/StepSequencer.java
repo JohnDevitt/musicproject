@@ -60,6 +60,8 @@ public class StepSequencer implements Runnable{
                         i = colCount;
                     }
 
+
+
                     play = getPlayStatus();
                 }
 

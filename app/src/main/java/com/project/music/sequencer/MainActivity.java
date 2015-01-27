@@ -2,6 +2,7 @@ package com.project.music.sequencer;
 
 import android.app.Activity;
 import android.content.Context;
+import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.support.v7.app.ActionBarActivity;
 import android.view.Menu;
@@ -25,6 +26,11 @@ public class MainActivity extends Activity {
     View[][] buttonMatrix;
     static Thread myThread;
     int speed;
+    private int defaultButton = R.drawable.sequencergrey_btn_default_normal_holo_light;
+    private int pressedButton = R.drawable.sequencerred_btn_default_normal_holo_light;
+    private int highlightedButton = R.drawable.sequencergreen_btn_default_normal_holo_light;
+    private int rowButton = R.drawable.sequencergrey_btn_default_pressed_holo_light;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -110,7 +116,7 @@ public class MainActivity extends Activity {
                 for(int i = 0; i < layout.getRowCount(); i++) {
                     for(int j = 0; j < layout.getColumnCount(); j++) {
                         buttonMatrix[i][j].setActivated(false);
-                        buttonMatrix[i][j].setBackgroundResource(R.drawable.sequencer_theme_btn_default_holo_light);
+                        buttonMatrix[i][j].setBackgroundResource(MainActivity.this.defaultButton);
                     }
                 }
 
@@ -127,7 +133,7 @@ public class MainActivity extends Activity {
                 for(int i = 0; i < layout.getRowCount(); i++) {
                     for(int j = 0; j < layout.getColumnCount(); j++) {
                         buttonMatrix[i][j].setActivated(false);
-                        buttonMatrix[i][j].setBackgroundResource(R.drawable.sequencer_theme_btn_default_holo_light);
+                        buttonMatrix[i][j].setBackgroundResource(MainActivity.this.defaultButton);
                     }
                 }
 
@@ -135,7 +141,7 @@ public class MainActivity extends Activity {
                     int note = (rand.nextInt(8));
                     if(note != 0) {
                         buttonMatrix[note][i].setActivated(true);
-                        buttonMatrix[note][i].setBackgroundResource(R.drawable.sequencer_theme_btn_default_focused_holo_light);
+                        buttonMatrix[note][i].setBackgroundResource(MainActivity.this.pressedButton);
                     }
                 }
 
@@ -167,7 +173,6 @@ public class MainActivity extends Activity {
         });
 
 
-
     }
 
 
@@ -181,15 +186,15 @@ public class MainActivity extends Activity {
                     public void onClick(View v) {
                         if (v.isActivated()) {
                             v.setActivated(false);
-                            v.setBackgroundResource(R.drawable.sequencer_theme_btn_default_holo_light);
+                            v.setBackgroundResource(MainActivity.this.defaultButton);
                         } else {
                             v.setActivated(true);
-                            v.setBackgroundResource(R.drawable.sequencer_theme_btn_default_focused_holo_light);
+                            v.setBackgroundResource(MainActivity.this.pressedButton);
                         }
                     }
                 });
 
-        button.setBackgroundResource(R.drawable.sequencer_theme_btn_default_holo_light);
+        button.setBackgroundResource(this.defaultButton);
 
         return button;
     }

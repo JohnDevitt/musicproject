@@ -13,6 +13,10 @@ public class StepSequencer implements Runnable{
     public PlayService playService;
     private static View[][] buttonMatrix;
     private static int speed;
+    private int defaultButton = R.drawable.sequencergrey_btn_default_normal_holo_light;
+    private int pressedButton = R.drawable.sequencerred_btn_default_normal_holo_light;
+    private int highlightedButton = R.drawable.sequencergreen_btn_default_normal_holo_light;
+    private int rowButton = R.drawable.sequencergrey_btn_default_pressed_holo_light;
 
     public StepSequencer(int rowCount, int colCount, View[][] buttonMatrix, int speed) {
         this.rowCount = rowCount;
@@ -35,7 +39,7 @@ public class StepSequencer implements Runnable{
 
                         for(int j = 0; j < rowCount; j++) {
                             if(buttonMatrix[j][i].isActivated() == true) {
-                                buttonMatrix[j][i].post(new EditButton(buttonMatrix, j, i, R.drawable.sequencergreen_btn_default_focused_holo_light));
+                                buttonMatrix[j][i].post(new EditButton(buttonMatrix, j, i, this.highlightedButton));
                                 PlayService playService = new PlayService(j, speed);
                                 Thread myThread = new Thread(playService);
                                 myThread.start();
@@ -66,16 +70,16 @@ public class StepSequencer implements Runnable{
 
     public void highlightCurrentColumn(int column) {
         for(int row = 0; row < rowCount; row++) {
-            buttonMatrix[row][column].post(new EditButton(buttonMatrix, row, column, R.drawable.sequencer_theme_btn_default_pressed_holo_light));
+            buttonMatrix[row][column].post(new EditButton(buttonMatrix, row, column, this.rowButton));
         }
     }
 
     public void removeHighlightCurrentColumn(int column) {
         for(int row = 0; row < rowCount; row++) {
             if(buttonMatrix[row][column].isActivated()) {
-                buttonMatrix[row][column].post(new EditButton(buttonMatrix, row, column, R.drawable.sequencer_theme_btn_default_focused_holo_light));
+                buttonMatrix[row][column].post(new EditButton(buttonMatrix, row, column, this.pressedButton));
             } else {
-                buttonMatrix[row][column].post(new EditButton(buttonMatrix, row, column, R.drawable.sequencer_theme_btn_default_holo_light));
+                buttonMatrix[row][column].post(new EditButton(buttonMatrix, row, column, this.defaultButton));
             }
         }
     }

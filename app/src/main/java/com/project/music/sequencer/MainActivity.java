@@ -8,10 +8,9 @@ import android.view.MenuItem;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
-import android.widget.Button;
 import android.widget.GridLayout;
-import android.widget.SeekBar;
 import android.widget.ImageButton;
+import android.widget.SeekBar;
 import android.widget.Spinner;
 import android.widget.Toast;
 
@@ -28,8 +27,6 @@ public class MainActivity extends Activity {
 
     private int defaultButton = R.drawable.sequencergrey_btn_default_normal_holo_light;
     private int pressedButton = R.drawable.sequencerred_btn_default_normal_holo_light;
-    private int highlightedButton = R.drawable.sequencergreen_btn_default_normal_holo_light;
-    private int rowButton = R.drawable.sequencergrey_btn_default_pressed_holo_light;
 
     @Override
     protected void onCreate(Bundle savedInstanceState)
@@ -39,22 +36,15 @@ public class MainActivity extends Activity {
 
         // Generate and fill matrix with sequencer buttons
         layout = (GridLayout)findViewById(R.id.mainLayout);
-        buttonMatrix = new Button[layout.getRowCount()][layout.getColumnCount()]; // Empty array of buttons
+        buttonMatrix = ButtonMatrixBuilder.buildButtonMatrix(getApplicationContext(), layout, layout.getRowCount(), layout.getColumnCount());
 
-        // Fill button array with buttons
-        for(int row = 0; row < layout.getRowCount(); row++) {
-            for(int column = 0; column < layout.getColumnCount(); column++) {
-                View button = generateButton(); // Generate button
-                buttonMatrix[row][column] = button; // Put button into button array
-                layout.addView(button); // Add button
-            }
-        }
 
         // START: Fill scales spinner with our different scales
         Spinner scales_spinner = (Spinner) findViewById(R.id.scales_array);
         // Create an ArrayAdapter using the string array and a default spinner layout
         ArrayAdapter<CharSequence> scales_adapter = ArrayAdapter.createFromResource(this,
                 R.array.scales_array, android.R.layout.simple_spinner_item);
+
         // Specify the layout to use when the list of choices appears
         scales_adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
         // Apply the adapter to the spinner
@@ -71,6 +61,7 @@ public class MainActivity extends Activity {
         // Initialize StepSequencer
         this.sequencer = new StepSequencer(layout.getRowCount(), layout.getColumnCount(), buttonMatrix, speed);
         myThread = new Thread(this.sequencer);
+        // Start the step sequencer, main logic of program begins here
         myThread.start();
 
 
@@ -78,7 +69,7 @@ public class MainActivity extends Activity {
         seekBar.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
             @Override
             public void onProgressChanged(SeekBar seekBar, int progressValue, boolean fromUser) {
-                StepSequencer.updateTempo(progressValue + 250);
+                StepSequencer.updateTempo(progressValue + speed);
             }
 
             @Override
@@ -209,33 +200,6 @@ public class MainActivity extends Activity {
 
     }
 
-    /**
-     *  generateButton
-     *
-     *  Generates a single button for step sequencer. Adds appearance and listeners.
-     **/
-    private View generateButton() {
-        Button button;
-        button = new Button(getApplicationContext());
-
-        button.setOnClickListener(
-                new View.OnClickListener() {
-                    @Override
-                    public void onClick(View v) {
-                        if (v.isActivated()) {
-                            v.setActivated(false);
-                            v.setBackgroundResource(MainActivity.this.defaultButton);
-                        } else {
-                            v.setActivated(true);
-                            v.setBackgroundResource(MainActivity.this.pressedButton);
-                        }
-                    }
-                });
-
-        button.setBackgroundResource(this.defaultButton);
-
-        return button;
-    }
 
     @Override
     protected void onPause()

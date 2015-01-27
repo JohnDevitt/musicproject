@@ -51,7 +51,7 @@ public class MainActivity extends Activity {
             }
         }
 
-        speed = 550;
+        speed = 250;
 
 
         // START: Fill scales spinner with our different scales

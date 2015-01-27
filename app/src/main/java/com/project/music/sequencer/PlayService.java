@@ -15,11 +15,11 @@ import java.util.HashMap;
  **/
 public class PlayService implements EventListener, Runnable{
 
-    private final double duration = 0.75; // seconds
-    private final int sampleRate = 8000;
-    private final int numSamples = (new Double(duration * sampleRate)).intValue();
-    private final double sample[] = new double[numSamples];
-    private final byte generatedSnd[] = new byte[2 * numSamples];
+    private double duration;// = 0.75; // seconds
+    private int sampleRate;// = 8000;
+    private int numSamples;// = (new Double(duration * sampleRate)).intValue();
+    private double sample[] ;//= new double[numSamples];
+    private byte generatedSnd[];// = new byte[2 * numSamples];
 
     private int note;
     private int speed;
@@ -28,14 +28,22 @@ public class PlayService implements EventListener, Runnable{
     private static HashMap<Integer, Long> indexToFrequency = new HashMap<Integer, Long>();
 
     public PlayService(int note, int speed) {
+
         this.note = note;
         this.speed = speed;
+
+        duration = (double)speed/(double)1000; // seconds
+        sampleRate = 8000;
+        numSamples = (new Double(duration * sampleRate)).intValue();
+        this.sample = new double[numSamples];
+        generatedSnd = new byte[2 * numSamples];
+
         changeScale("CMajor");
     }
 
     public void run() {
 
-        playSound(this.note, this.speed);
+        playSound(this.note);
 
         try {
             Thread.sleep(speed);
@@ -52,9 +60,8 @@ public class PlayService implements EventListener, Runnable{
      *  Generates the tone to be played by pitch and speed.
      *
      *  @param pitch    which note is being sent in
-     *  @param speed    speed of play, tempo
      **/
-    void genTone(int pitch, int speed){
+    void genTone(int pitch){
         double freqOfTone = indexToFrequency.get(new Integer(pitch));
         // fill out the array
         for (int i = 0; i < numSamples; ++i) {
@@ -98,12 +105,11 @@ public class PlayService implements EventListener, Runnable{
      *  Plays the generated tone.
      *
      *  @param pitch    which note is being sent in
-     *  @param speed    speed of play, tempo
      **/
-    void playSound(int pitch, int speed)
+    void playSound(int pitch)
     {
         // Generate the tone first
-        genTone(pitch, speed);
+        genTone(pitch);
 
         // Plays the tone
         audioTrack = new AudioTrack(AudioManager.STREAM_MUSIC,

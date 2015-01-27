@@ -24,13 +24,12 @@ public class MainActivity extends Activity {
     GridLayout layout;
     View[][] buttonMatrix;
     static Thread myThread;
-    int speed;
+    int speed = 250;
 
     private int defaultButton = R.drawable.sequencergrey_btn_default_normal_holo_light;
     private int pressedButton = R.drawable.sequencerred_btn_default_normal_holo_light;
     private int highlightedButton = R.drawable.sequencergreen_btn_default_normal_holo_light;
     private int rowButton = R.drawable.sequencergrey_btn_default_pressed_holo_light;
-
 
     @Override
     protected void onCreate(Bundle savedInstanceState)
@@ -50,9 +49,6 @@ public class MainActivity extends Activity {
                 layout.addView(button); // Add button
             }
         }
-
-        speed = 250;
-
 
         // START: Fill scales spinner with our different scales
         Spinner scales_spinner = (Spinner) findViewById(R.id.scales_array);
@@ -165,7 +161,7 @@ public class MainActivity extends Activity {
                     }
                 }
 
-                // Set random buttons to activated
+                // Set randomly selected buttons to activated
                 for(int i = 0; i < layout.getColumnCount(); i++) {
                     int note = (rand.nextInt(8));
                     if(note != 0) {
@@ -206,14 +202,18 @@ public class MainActivity extends Activity {
 
             @Override
             public void onNothingSelected(AdapterView<?> parentView) {
-                return;//MainActivity.this.getSequencer().changeScale("CMajor");
+                return;
             }
         });
 
 
     }
 
-
+    /**
+     *  generateButton
+     *
+     *  Generates a single button for step sequencer. Adds appearance and listeners.
+     **/
     private View generateButton() {
         Button button;
         button = new Button(getApplicationContext());
@@ -235,6 +235,14 @@ public class MainActivity extends Activity {
         button.setBackgroundResource(this.defaultButton);
 
         return button;
+    }
+
+    @Override
+    protected void onPause()
+    {
+        super.onPause();
+
+        getSequencer().stopPlay();
     }
 
 

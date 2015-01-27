@@ -15,54 +15,67 @@ import java.util.HashMap;
  **/
 public class PlayService implements EventListener, Runnable{
 
-    private double duration;// = 0.75; // seconds
-    private int sampleRate;// = 8000;
-    private int numSamples;// = (new Double(duration * sampleRate)).intValue();
-    private double sample[] ;//= new double[numSamples];
-    private byte generatedSnd[];// = new byte[2 * numSamples];
+    private double duration;
+    private int sampleRate;
+    private int numSamples;
+    private double sample[];
+    private byte generatedSnd[];
 
     private int note;
     private int speed;
 
     private AudioTrack audioTrack;
+
     private static HashMap<Integer, Long> indexToFrequency = new HashMap<Integer, Long>();
 
+    /**
+     *  PlayService
+     *
+     *  @param note     int of note (1-8) of which note is being played
+     *  @param speed    speed, in milliseconds
+     **/
     public PlayService(int note, int speed) {
 
         this.note = note;
         this.speed = speed;
 
-        duration = (double)speed/(double)1000; // seconds
+        duration = (double)speed/(double)1000; // convert milliseconds into seconds
         sampleRate = 8000;
         numSamples = (new Double(duration * sampleRate)).intValue();
         this.sample = new double[numSamples];
         generatedSnd = new byte[2 * numSamples];
 
-        changeScale("CMajor");
+        changeScale("CMajor"); // Default scales
     }
 
-    public void run() {
-
+    public void run()
+    {
         playSound(this.note);
 
+        // Sleep thread for length of note
         try {
             Thread.sleep(speed);
         } catch (InterruptedException e) {
             e.printStackTrace();
         }
-        audioTrack.release();
+
+        audioTrack.release(); // Release audioTrack
+
         return;
     }
 
     /**
      *  genTone
      *
-     *  Generates the tone to be played by pitch and speed.
+     *  Generates the tone to be played by pitch (note played)
      *
      *  @param pitch    which note is being sent in
      **/
-    void genTone(int pitch){
+    void genTone(int pitch)
+    {
+        // Get frequency from hash table
         double freqOfTone = indexToFrequency.get(new Integer(pitch));
+
         // fill out the array
         for (int i = 0; i < numSamples; ++i) {
             // sample[i] = Math.sin(2 * Math.PI * i / (sampleRate/freqOfTone));
@@ -124,7 +137,7 @@ public class PlayService implements EventListener, Runnable{
     /**
      *  changeScale
      *
-     *  Function initializes hash table of frequencies for different scales.
+     *  Function updates/initializes hash table of frequencies for different scales.
      *
      *  @param scale    input string to pick scale
      **/
@@ -160,25 +173,25 @@ public class PlayService implements EventListener, Runnable{
 
 
     public static void initializeCMajorScale() {
-        indexToFrequency.put(new Integer(0), new Long(261));
-        indexToFrequency.put(new Integer(1), new Long(293));
-        indexToFrequency.put(new Integer(2), new Long(329));
-        indexToFrequency.put(new Integer(3), new Long(349));
-        indexToFrequency.put(new Integer(4), new Long(392));
-        indexToFrequency.put(new Integer(5), new Long(440));
-        indexToFrequency.put(new Integer(6), new Long(493));
-        indexToFrequency.put(new Integer(7), new Long(523));
+        indexToFrequency.put(new Integer(0), new Long(262)); // C4
+        indexToFrequency.put(new Integer(1), new Long(294)); // D4
+        indexToFrequency.put(new Integer(2), new Long(330)); // E4
+        indexToFrequency.put(new Integer(3), new Long(349)); // F4
+        indexToFrequency.put(new Integer(4), new Long(392)); // G4
+        indexToFrequency.put(new Integer(5), new Long(440)); // A4
+        indexToFrequency.put(new Integer(6), new Long(494)); // B4
+        indexToFrequency.put(new Integer(7), new Long(523)); // C5
     }
 
     public static void initializeAMinorScale() {
-        indexToFrequency.put(new Integer(0), new Long(220));
-        indexToFrequency.put(new Integer(1), new Long(233));
-        indexToFrequency.put(new Integer(2), new Long(247));
-        indexToFrequency.put(new Integer(3), new Long(262));
-        indexToFrequency.put(new Integer(4), new Long(277));
-        indexToFrequency.put(new Integer(5), new Long(294));
-        indexToFrequency.put(new Integer(6), new Long(311));
-        indexToFrequency.put(new Integer(7), new Long(330));
+        indexToFrequency.put(new Integer(0), new Long(220)); // A3
+        indexToFrequency.put(new Integer(1), new Long(247)); // B3
+        indexToFrequency.put(new Integer(2), new Long(262)); // C4
+        indexToFrequency.put(new Integer(3), new Long(294)); // D4
+        indexToFrequency.put(new Integer(4), new Long(330)); // E4
+        indexToFrequency.put(new Integer(5), new Long(349)); // F4
+        indexToFrequency.put(new Integer(6), new Long(392)); // G4
+        indexToFrequency.put(new Integer(7), new Long(440)); // A4
     }
 
     public static void initializeGMajorScale() {
